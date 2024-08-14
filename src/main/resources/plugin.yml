@@ -1,0 +1,4 @@
+name: LetBlocksActLikeSand
+version: '${project.version}'
+main: dev.larrox.letblocksactlikesand.LetBlocksActLikeSand
+api-version: '1.21'
