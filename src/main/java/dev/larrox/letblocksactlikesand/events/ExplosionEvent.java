@@ -2,6 +2,7 @@ package dev.larrox.letblocksactlikesand.events;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +15,10 @@ public class ExplosionEvent implements Listener {
     public void onExplode(EntityExplodeEvent event) {
         World world = event.getLocation().getWorld();
 
-        event.blockList().forEach(block -> {
+        event.blockList().removeIf(block -> {
             Material material = block.getType();
-            if (material != Material.AIR) {
+
+            if (material != Material.AIR && material.getBlastResistance() <= 4.0f) {
                 FallingBlock fallingBlock = world.spawnFallingBlock(block.getLocation(), material.createBlockData());
 
                 Vector direction = new Vector(
@@ -26,9 +28,11 @@ public class ExplosionEvent implements Listener {
                 ).normalize().multiply(1.0);
 
                 fallingBlock.setVelocity(direction);
+                block.setType(Material.AIR);
+                return false;
             }
 
-            block.setType(Material.AIR);
+            return true;
         });
     }
 }
